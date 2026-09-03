@@ -1,4 +1,4 @@
-# IBM Bob × SPSS Modeler で需要予測ストリームのたたき台を作る
+# IBM Bob × SPSS Modeler で需要予測ストリームの自動生成する
 
 ## はじめに
 
@@ -6,16 +6,18 @@ IBM Bob（IBM の AI コーディングアシスタント）を使って、SPSS 
 
 SPSS Modeler は通常、ノードをGUIでキャンバスに配置・接続してストリームを組み上げていきます。SPSS Modeler には Jython スクリプトでこの GUI 操作をそのまま自動化できる機能があり、ノードの生成・接続・プロパティ設定をコードで表現できます。今回はこの仕組みを活用し、Bob にストリームのたたき台を生成させます。プロンプト1つから Jython スクリプト生成 → SPSS Modeler 実行 → ストリーム保存まで一気に進みます。もちろん複雑な処理はそのまま作れないこともありますが、**動くたたき台をすばやく手に入れる**という目的には十分使えます。その手順と仕組みをまとめます。
 
+本記事は、同じ構成（ibm-docs MCP + spss-clemb MCP）を紹介した [IBM Bob＋カスタムMCPでSPSS Modelerストリームを自動生成](https://qiita.com/spssfun2017/items/5073259ae6479aabbfbb) をベースに、**Bob スキル（spss-model-build）** を加えることで、プロンプトをシンプルにしつつエラー修正ループや ibm-docs 参照もスキル側に任せる構成を試した記録です。
+
 ---
 
 ## 構成概要
 
 Bob に拡張機能として **MCP** と **スキル** の3つを組み合わせて使います。
 
-| コンポーネント              | 種別         | 役割                                                                                                                                                                 |
-| --------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **ibm-docs MCP**            | MCP サーバー | IBM 公式ドキュメントをリアルタイムで検索・参照。SPSS Modeler のノードプロパティや API 仕様を Bob に提供する                                                          |
-| **spss-clemb MCP**          | MCP サーバー | SPSS Modeler の実行を Bob から直接呼び出せるようにする。Jython スクリプトをコマンドラインで実行し、ストリーム構築・保存をバッチ処理する                              |
+| コンポーネント              | 種別         | 役割                                                                                                                                                                                                                                                                                             |
+| --------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **ibm-docs MCP**            | MCP サーバー | IBM 公式ドキュメントをリアルタイムで検索・参照。SPSS Modeler のノードプロパティや API 仕様を Bob に提供する                                                                                                                                                                                      |
+| **spss-clemb MCP**          | MCP サーバー | SPSS Modeler の実行を Bob から直接呼び出せるようにする。Jython スクリプトをコマンドラインで実行し、ストリーム構築・保存をバッチ処理する                                                                                                                                                          |
 | **spss-model-build スキル** | Bob スキル   | 「CSV からモデルを構築する」手順を定義したプロンプト定義ファイル。CSV 構造の把握 → モデル種別判定 → Jython スクリプト生成 → clemb 実行 の一連の流れを Bob に指示する。わからないことがあれば ibm-docs MCP でドキュメントを調べ、実行が失敗したらログを確認して修正・再実行するよう定義されている |
 
 | 入力             | 内容                                                     |
@@ -63,9 +65,11 @@ irm https://raw.githubusercontent.com/hkwd/spss-clemb-mcp/main/install-spss-clem
 
 ---
 
-## プロンプト
+## 実行手順
 
-以下のプロンプトを Bob に投入します。
+### ステップ1: プロンプトの入力
+
+Bob に以下のプロンプトを投入します。スキルに手順が定義されているため、細かい指示は不要です。
 
 ```
 SPSS Modeler の店舗別日次需要予測ストリームを構築してください。
@@ -78,44 +82,18 @@ SPSS Modeler の店舗別日次需要予測ストリームを構築してくだ�
 - 2025年12月以降の予測期間データのみ抽出し、実績値と予測値を折れ線グラフで可視化する
 ```
 
----
+### ステップ2: スキルのロードと CSV 構造確認
 
-## Bob の動作フロー
+Bob はまず `spss-model-build` スキルをロードし、続いて 2 つの CSV を読み込んでデータ構造を把握します。
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Bob
-    participant ibm-docs MCP
-    participant clemb MCP
+- `01pos.csv`：SDATE（販売日）/ 店舗 / 商品 / 数量 などのカラムを確認
+- `02calendar.csv`：祝日フラグ / 販促フラグ / 長期休暇フラグ / イベントフラグ の存在を確認
 
-    User->>Bob: 需要予測ストリーム構築プロンプト
-    Bob->>Bob: use_skill(spss-model-build) を起動
-    Bob->>Bob: read_file(01pos.csv, 02calendar.csv) でCSV構造確認
-    Bob->>ibm-docs MCP: SPSS Modeler API 仕様を参照（必要に応じて）
-    Bob->>Bob: build_forecast.py (Jython) を生成・保存
-    Bob->>clemb MCP: execute_clemb(build_forecast.py) を実行
-    clemb MCP-->>Bob: Exit Code 0 + 実行ログ返却
-    Bob->>User: 結果レポート（ストリームファイル・グラフ説明）
-```
+スキルの定義に従い、この時点でモデル種別（時系列 → Expert Modeler）と集計キー（SDATE × 店舗）が決定されます。
 
-今回Bob が自律的に実行したステップは以下の通りです。
+### ステップ3: Jython スクリプトの生成
 
-| #   | ツール          | 内容                                           |
-| --- | --------------- | ---------------------------------------------- |
-| 1   | `use_skill`     | `spss-model-build` スキルをロード              |
-| 2   | `read_file`     | `01pos.csv` / `02calendar.csv` の構造を確認    |
-| 3   | `write_file`    | `build_forecast.py`（Jython スクリプト）を生成 |
-| 4   | `execute_clemb` | SPSS Modeler でスクリプトを実行                |
-| 5   | 結果レポート    | ログ解析・ストリーム保存確認・グラフ説明       |
-
----
-
-## 生成された Jython スクリプト
-
-Bob が自動生成した [`build_forecast.py`](build_forecast.py) の要点を解説します。
-
-### ストリームの全体構成
+CSV 構造をもとに `build_forecast.py` を自動生成します。生成されるストリームの構成は以下の通りです。
 
 ```
 POS読み込み (variablefile)
@@ -130,68 +108,9 @@ POS読み込み (variablefile)
                                      └─ 店舗別需要予測グラフ (multiplot)
 ```
 
-### 主要なコードポイント
+### ステップ4: clemb による実行
 
-**① 日次集計**
-
-```python
-agg_node = stream.createAt("aggregate", u"日次集計", 200, 100)
-agg_node.setPropertyValue("keys", [u"SDATE", u"店舗"])
-agg_node.setKeyedPropertyValue("aggregates", u"数量", [u"Sum"])
-```
-
-`SDATE`（販売日）× `店舗` をキーに数量を Sum 集計します。
-
-**② カレンダー結合**
-
-```python
-merge_node.setPropertyValue("method",      u"Keys")
-merge_node.setPropertyValue("key_fields",  [u"SDATE"])
-merge_node.setPropertyValue("common_keys", True)
-```
-
-`SDATE` キーで内部結合し、4つのフラグ列を付加します。
-
-**③ フィールドロール定義**
-
-```python
-type_node.setKeyedPropertyValue(u"direction", u"売上数量", u"Target")
-type_node.setKeyedPropertyValue(u"direction", u"店舗",     u"Split")
-for flag in [u"祝日フラグ", u"販促フラグ", u"長期休暇フラグ", u"イベントフラグ"]:
-    type_node.setKeyedPropertyValue(u"direction", flag, u"Input")
-    type_node.setKeyedPropertyValue(u"type",      flag, u"Flag")
-```
-
-- `売上数量` → Target（予測対象）
-- `店舗` → Split（店舗ごとに別モデルを構築）
-- フラグ4種 → Input（カレンダーイベントとして使用）
-
-**④ Expert Modeler で時系列予測**
-
-```python
-ts_node.setPropertyValue("method",          "ExpertModeler")
-ts_node.setPropertyValue("splitFields",     [u"店舗"])
-ts_node.setPropertyValue("targets",         [u"売上数量"])
-ts_node.setPropertyValue("events",          [u"祝日フラグ", u"販促フラグ",
-                                              u"長期休暇フラグ", u"イベントフラグ"])
-ts_node.setPropertyValue("forecastperiods", 3)
-ts_node.setPropertyValue("extend_records_into_future", True)
-```
-
-Expert Modeler が ARIMA / 指数平滑などのモデルを店舗別に自動選択し、3日先まで予測します。フラグ4種をカレンダーイベントとして組み込むのがポイントです。
-
-**⑤ グラフ出力**
-
-```python
-mp_node = stream.createAt("multiplot", u"店舗別需要予測グラフ", 1100, 170)
-mp_node.setPropertyValue("panel_field", u"店舗")
-mp_node.setPropertyValue("x_field",    u"SDATE")
-mp_node.setPropertyValue("y_fields",   [u"売上数量", u"$TS-売上数量"])
-```
-
-`multiplot` で店舗別パネルを生成します。
-- **青線** `売上数量`：実績値
-- **橙線** `$TS-売上数量`：Expert Modeler による予測値
+`spss-clemb MCP` を通じて `build_forecast.py` を SPSS Modeler にバッチ実行させます。スキルの定義に従い、実行ログを確認してエラーがあれば修正・再実行します。今回はエラーなく一発で通りました。
 
 ---
 
@@ -214,9 +133,7 @@ Exit Code: 0 — 全工程 正常完了
 | ⑦ グラフ出力       | `multiplot` で店舗別パネル（実績値 + 予測値）             | ✅                |
 | ⑧ ストリーム保存   | `store_forecast.str` に保存                               | ✅                |
 
-### 警告について
 
-実行ログに `AEQTD0041W: metricFieldList のフィールドが重複` という警告が出ますが、これは `splitFields` 方式で複数店舗を分割予測する際に内部的にフラグが各スプリットへ重複列挙される**既知の挙動**です。モデル構築・予測結果には影響しません（エラーではなく警告）。
 
 ### ストリームの確認
 
