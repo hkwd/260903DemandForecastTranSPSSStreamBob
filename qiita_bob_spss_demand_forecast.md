@@ -1,4 +1,4 @@
-# IBM Bob × SPSS Modeler で需要予測ストリームの自動生成する
+# IBM Bob＋カスタムMCP＋スキルでSPSS Modelerストリームを自動生成
 
 ## はじめに
 
