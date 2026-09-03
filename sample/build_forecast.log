@@ -1,0 +1,138 @@
+IBM® SPSS® Modeler 19 - (C) Copyright IBM Corp. 1994, 2021
+バッチ モードによる実行、フラグ 2026/09/03 13:51:33 の [-script c:\sample\s3\build_forecast.py -execute -log c:\sample\s3\build_forecast.log ]
+情報: 実行を開始しています...
+情報: Stream run in progress...
+警告: 「画面に出力」を実行すると、ノード _tmp (7 フィールド、1,462 レコード) 内のバッチに出力されなくなります。  
+情報: ストリーム実行の成功
+情報: ストリーム実行の完了 経過時間=0.11 秒、CPU=0.05 秒
+情報: 実行を開始しています...
+情報: Stream run in progress...
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1040: 22%
+I1040: 25%
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1040: 47%
+I1040: 50%
+I1040: 100%
+情報: モデル '売上数量' の構築に、0 時間 0 分 13 秒かかりました
+情報: ストリーム実行の成功
+情報: ストリーム実行の完了 経過時間=13.16 秒、CPU=21.11 秒
+情報: 実行を開始しています...
+情報: Stream run in progress...
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1040: 14%
+I1040: 16%
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 祝日フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 販促フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド 長期休暇フラグ が重複しています。
+I1: AEQTD0041W: パラメーター metricFieldList のフィールド イベントフラグ が重複しています。
+I1: AEQTD0044W: ディメンション・フィールド・リストがヌルでない場合、パラメーター extendMetricVals は有効になりません。
+I1040: 31%
+I1040: 33%
+I1040: 48%
+I1040: 50%
+I1040: 66%
+I1040: 96%
+I1040: 100%
+警告: 「画面に出力」を実行すると、ノード [売上数量 $TS-売上数量] v. SDATE の線グラフ 内のバッチに出力されなくなります。  
+情報: ストリーム実行の成功
+情報: ストリーム実行の完了 経過時間=1.98 秒、CPU=4.31 秒
