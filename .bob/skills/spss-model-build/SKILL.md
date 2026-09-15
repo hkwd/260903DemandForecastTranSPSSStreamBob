@@ -87,9 +87,17 @@ output_path = os.path.join(base_dir, "<ファイル名>.str")
 
 #### A. データ入力（`variablefile`）
 
+> ⚠️ **`encoding` はファイルの実際のエンコーディングを確認してから設定する。**
+> デフォルトは `"SystemDefault"`（Windows 環境では Shift-JIS）。
+> **確認方法**: `python -c "with open('file.csv','rb') as f: print(f.read(4))"` でバイト列を確認する。
+> 先頭が `0x43 0x55 ...` など ASCII+マルチバイトで `0xe5 0xba ...` 形式（3バイト/文字）なら UTF-8。
+> `0x93 0x58 ...` 形式（2バイト/文字）なら Shift-JIS（= `"SystemDefault"` のまま指定不要）。
+> `"LocalEncoding"` は無効な値。UTF-8 の場合のみ `"UTF-8"` を明示する。
+
 ```python
 vf_node = stream.createAt("variablefile", u"CSVインポート", 50, 100)
 vf_node.setPropertyValue("full_filename", csv_path)
+# UTF-8 CSV の場合のみ指定（Shift-JIS の場合は省略 → SystemDefault が使われる）
 vf_node.setPropertyValue("encoding", "UTF-8")
 # タブ区切り: vf_node.setPropertyValue("delimit_tab", True)
 ```
@@ -121,11 +129,17 @@ merge_node.setPropertyValue("common_keys", True)              # True = Inner joi
 
 #### D. フィールド型・ロール定義（`type`）
 
+> ⚠️ **`tmp.run([])` はデータフロー上流のノード（variablefile / merge など）が正常に動作していることが前提。**
+> 上流でエラー（encoding 誤り / merge キー不一致など）があると
+> `「このストリームはサーバーに接続していません」` が発生する。
+> 上流のノード単体テストで Exit Code 0 を確認してから type ノードを追加すること。
+
 ```python
 type_node = stream.createAt("type", u"フィールド型定義", 500, 100)
 stream.link(merge_node, type_node)
 
 # フィールドをインスタンス化（一時テーブルを実行して削除）
+# ※ 上流ノードが正常動作している場合のみ有効
 tmp = stream.createAt("table", u"_tmp", 650, 200)
 stream.link(type_node, tmp)
 tmp.run([])
@@ -506,6 +520,13 @@ mcp__spss-clemb-mcp_996b__execute_clemb
 | モデル構築完了 | `ストリーム実行の成功` が 2 回以上（型定義実行 + モデル実行）|
 | 時系列の場合 | `モデル '...' の構築に、X 分 Y 秒かかりました`（Expert Modeler は全候補評価のため数分かかる）|
 
+**無視してよい警告（Exit Code 0 であれば問題なし）**
+
+| 警告メッセージ | 対象ノード | 理由 |
+|---|---|---|
+| `AEQTD0041W: パラメーター metricFieldList のフィールド <名前> が重複しています` | `ts` のみ | `events` に指定したフィールドが内部の `metricFieldList`（全入力変数リスト）にも自動追加される仕様。モデル構築・予測は正常完了する |
+| `警告: 「画面に出力」を実行すると、ノード [...] 内のバッチに出力されなくなります` | `multiplot` / `timeplot` | バッチモード（clemb.exe）でグラフノードを実行した際の仕様上の通知。グラフノードの実行自体は完了している |
+
 ---
 
 ## よくあるエラーと対処
@@ -526,7 +547,10 @@ mcp__spss-clemb-mcp_996b__execute_clemb
 | `findByType(): 2nd arg can't be coerced to String` | `findByType` 第2引数誤り | 第2引数は常に `None`。複数ナゲット取得は `id()` 差分で識別する |
 | `'ExtensionBuildM' has no attribute 'getOutputLinks'` | ts ノードに `getOutputLinks()` 呼び出し | `results` リストか `id()` 差分で取得する |
 | CLEM 式の日本語が文字化け（`蠎苓` など） | JVM が UTF-8 でない | `.bat` に `JAVA_TOOL_OPTIONS` を設定して `cmd.exe` 経由で実行 |
-| `AEQTD0041W: metricFieldList のフィールドが重複` | `candidate_inputs` と `events` に同じフィールド | フラグ類は `events` のみに指定し `candidate_inputs` と重複させない |
+| 日本語フィールド名が SPSS Modeler 側で化ける / 文字化けにより実在するフィールドが「無効なフィールド」として無視される | CSV が UTF-8 なのに `encoding` 未指定（`"SystemDefault"` = Shift-JIS で読んでしまう） | CSV のバイト列を確認し、UTF-8 の場合は `vf_node.setPropertyValue("encoding", "UTF-8")` を追加する |
+| `encoding` に `"LocalEncoding"` を指定するとエラー / 文字化け | `"LocalEncoding"` は無効な値 | Shift-JIS は `"SystemDefault"`（省略可）、UTF-8 は `"UTF-8"` を使う |
+| `「このストリームはサーバーに接続していません」` が `tmp.run([])` で発生 | 上流ノード（variablefile / merge など）にエラーがある状態で type ノードの一時テーブルを実行した | まず上流ノード単体を出力ノードで実行（Exit Code 0）してから type ノードを追加する。`tmp.run([])` 自体は有効な API |
+| `AEQTD0041W: metricFieldList のフィールドが重複`（`ts` ノードのみ） | `events` に指定したフィールドが内部 `metricFieldList` に自動追加される仕様上の重複、または `candidate_inputs` と `events` に同じフィールドを重複指定している | **無視可**（Exit Code 0 なら問題なし）。重複を減らしたい場合はフラグ類を `events` のみに指定し `candidate_inputs` と重複させない |
 | `プロパティー 'formula' が定義されていません` | derive プロパティ名誤り | `formula_expr` を使う（`formula` は無効）|
 | `値 'String' はプロパティー 'result_type' に対して有効ではありません` | derive の result_type 誤り | 有効値は `"Flag"` / `"Nominal"` / `"Continuous"` のみ。文字列を返す場合は省略する |
 | `引数の型に演算子または関数を適用できませんでした: substring(日付, 整数, 整数)` | 日付型フィールドに文字列関数を適用 | `datetime_year()` / `datetime_month()` を使い `to_string()` で変換する |
@@ -539,6 +563,10 @@ mcp__spss-clemb-mcp_996b__execute_clemb
 | `プロパティー 'renamed_fields' が定義されていません` | filter ノードのリネームプロパティ名誤り | `setKeyedPropertyValue("new_name", 元名, 新名)` を使う |
 | `NameError: name '__file__' is not defined` | バッチモードで `__file__` を使用 | `base_dir = r"<絶対パス>"` を直接指定する（`__file__` はバッチモードで未定義）|
 | `SyntaxError: encoding declaration in Unicode string` | スクリプト先頭に `# -*- coding: utf-8 -*-` を記述 | この行は Jython では書いてはいけない。削除する |
+| `E3031: ファイル "<パス>" を開けないか、またはファイルの作成に失敗しました` | 日本語・スペース・`+` などの特殊文字を含むパスを SPSS Modeler が解釈できない | CSV ファイルを ASCII 文字のみのパス（例: `~/spss_work/`）にコピーし、`base_dir` をそのパスに変更する |
+| スクリプト内の日本語フィールド名が別の文字に化ける（例: `祝` → `祉`） | Jython スクリプト内の `\uXXXX` エスケープのコードポイント誤り | `python3 -c "print([hex(ord(c)) for c in 'フィールド名'])"` で正しいコードポイントを確認してからスクリプトに記述する |
+| `AEQAC0100E: フィールド <名前> がデータ・モデル内に見つかりません` | フィールド名の文字化け、またはスペルミスにより実在しないフィールド名を参照している | ログのフィールド名と CSV ヘッダーを目視で照合する。文字化けの場合は上記コードポイント確認を行う |
+
 ---
 
 ## CLEM 式 リファレンス
